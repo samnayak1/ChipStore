@@ -33,7 +33,7 @@ router.post('/register/sendotp',async (req,res)=>{
 
     
        //otp logic goes here
-    await sms(userDetails);
+  /*  await sms(userDetails); */
        
   res.status(200).json(newUser);
   

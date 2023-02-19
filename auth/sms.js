@@ -8,8 +8,8 @@ async function sms(userDetails){
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user:process.env.etheralemail, // generated ethereal user
-      pass: process.env.etheralpassword, // generated ethereal password
+      user:process.env.ETHERALEMAIL, // generated ethereal user
+      pass: process.env.ETHERALPASSWORD, // generated ethereal password
     },
   });
 
@@ -19,7 +19,7 @@ async function sms(userDetails){
   console.log(otpGenerated);
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Chips" <samasth.nayak@learner.manipal.edu>', // sender address
+    from: process.env.ETHERALEMAIL, // sender address
     to: userDetails.email, // list of receivers
     subject: "Registration to Chip", // Subject line
     text: "Enter OTP in the website", // plain text body
