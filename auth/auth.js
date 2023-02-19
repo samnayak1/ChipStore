@@ -53,8 +53,8 @@ router.post('/register/verify/:id',async (req,res)=>{
     try{
       let success=false;
       const emailquery=await pool.query("SELECT email from usertable where user_id=$1",[req.params.id]);
-      //console.log(emailquery.rows[0].email);
-      const otpquery=await pool.query("SELECT otp from otptable where email=$1",[emailquery.rows[0].email]);
+      const email=emailquery.rows[0].email;
+      const otpquery=await pool.query("SELECT otp from otptable where email=$1",[email]);
       //console.log(otpquery.rows[0].otp);
       const otpbody=req.body.otp;
       //console.log(otpbody);
@@ -64,8 +64,8 @@ router.post('/register/verify/:id',async (req,res)=>{
       }
 
       if(success==true){
-        const token=jwtGenerator(req.params.id);
-        const deleteotp=pool.query("DELETE from otptable where email=$1",[emailquery.rows[0].email]);
+        const token=jwtGenerator(email);
+        const deleteotp=pool.query("DELETE from otptable where email=$1",[email]);
         res.json({'token':token});
 
       }  
