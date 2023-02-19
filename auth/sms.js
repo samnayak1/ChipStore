@@ -1,5 +1,6 @@
 const nodemailer=require('nodemailer')
 const pool = require('../db');
+require('dotenv').config();
 
 async function sms(userDetails){
   let transporter = nodemailer.createTransport({
@@ -7,8 +8,8 @@ async function sms(userDetails){
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'samasth.nayak@learner.manipal.edu', // generated ethereal user
-      pass: 'Grifter123', // generated ethereal password
+      user:process.env.etheralemail, // generated ethereal user
+      pass: process.env.etheralpassword, // generated ethereal password
     },
   });
 
