@@ -6,8 +6,7 @@ const jwtGenerator=require('./jwtgenerator');
 router.post('/',async(req,res)=>{
  
     const loginCredentials={email,password}=req.body;
-    const user=await pool.query("SELECT email,password,isactive from usertable where email=$1",[email]);
-    console.log(user); 
+    const user=await pool.query("SELECT email,password,isactive from usertable where email=$1",[email]); 
     if(user.rows.length==0){
         res.status(401).json({message:'user not found'});
     }
@@ -23,7 +22,7 @@ router.post('/',async(req,res)=>{
     }
 
     const token=jwtGenerator(UserEmail);
-    res.json({token});
+    res.json({'token':token});
 
 
 
