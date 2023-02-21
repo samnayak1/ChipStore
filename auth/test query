@@ -1,0 +1,2 @@
+INSERT INTO sellertable(first_name,last_name,phone,email,street,pincode,state,country,balance,password,isvalid)
+values ('Sam','Nayak','8088072598','samasthnayak1@gmail.com','Jodhu Raste','123456','Karnataka','India',000000.0,'samasth123',true);

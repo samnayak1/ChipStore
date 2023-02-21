@@ -1,14 +1,16 @@
-const express=require('express'); 
-const pool=require('../db');
+const express=require('express');
 const router=express.Router();
+const verifytokenseller=('./verifytokenseller');
+const pool=require('../db');
 const bcrypt=require('bcrypt');
 const jwtGenerator=require('./jwtgenerator');
-router.post('/',async(req,res)=>{
-try {
-    
+router.post('/login',async (req,res)=>{
 
+    try {
+        
+   
     const loginCredentials={email,password}=req.body;
-    const user=await pool.query("SELECT email,password,isactive from usertable where email=$1",[email]); 
+    const user=await pool.query("SELECT email,password,isactive from sellertable where email=$1",[email]); 
     if(user.rows.length==0){
         res.status(401).json({message:'user not found'});
     }
@@ -26,21 +28,15 @@ try {
     const token=jwtGenerator(UserEmail);
     res.json({'token':token});
 
-
 } catch (error) {
-    res.status(500).json({'message':error.message});
+     res.status(500).json({'message':error.message});   
 }
-
-
-
-
-
-   
-
-
 })
 
 
 
-
 module.exports=router;
+
+
+
+

@@ -15,12 +15,12 @@ module.exports=async(req,res,next)=>{
         return res.status(403).json({message:"not authorized"});
        }
 
-
+       next();
 
     } catch (error) {
         return res.status(403).json({message:"not authorized"});
     }
 
 
-    next();
+   
 }
