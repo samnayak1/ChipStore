@@ -7,7 +7,16 @@ const nodemailer=require('nodemailer')
 const jwt=require('jsonwebtoken')
 const jwtGenerator=require('./jwtgenerator')
 const sms=require('./sms');
-router.post('/register/sendotp',async (req,res)=>{
+const rateLimit = require('express-rate-limit')
+const createAccountLimiter = rateLimit({
+	windowMs: 60 * 60 * 1000, // 1 hour
+	max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
+	message:
+		'Too many accounts created from this IP, please try again after an hour',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+router.post('/register/sendotp',createAccountLimiter,async (req,res)=>{
     try {
           const userDetails={
              firstName:firstName,
@@ -48,7 +57,7 @@ router.post('/register/sendotp',async (req,res)=>{
 
 
 
-router.post('/register/verify/:id',async (req,res)=>{
+router.post('/register/verify/:id',createAccountLimiter,async (req,res)=>{
   
     try{
       let success=false;
