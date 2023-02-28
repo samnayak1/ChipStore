@@ -4,6 +4,7 @@ const multer = require("multer");
 const uuid = require("uuid").v4;
 const router=express.Router();
 const pool=require('../db');
+const app=express();
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
 router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenseller afterwards
@@ -26,11 +27,13 @@ const productId=createproductquery.rows[0].product_id;
   console.log(createlogsellingquery);
   res.status(200).json({message:'product created'});
 } catch (error) {
-    res.status(500).json({message:error.message});
+    res.status(500).json({'message':error.message});
 }
 
     
 })
+
+
 
 
  const storage = multer.diskStorage({
@@ -52,9 +55,6 @@ const fileFilter = (req, file, cb) => {
 };
 
 // ["image", "jpeg"]
-
-
-
 
 const upload = multer({
   storage,
@@ -83,6 +83,15 @@ app.use((error, req, res, next) => {
     }
   }
 });
+
+router.post("/create/image",upload.array("file"), async (req, res) => {
+  try {
+
+   return res.json({ status: "success" });
+  } catch (err) {
+    console.log(err);
+   }
+ });
 
 
 module.exports=router;

@@ -5,3 +5,5 @@ node_modules
 id text
 
 .gitignore
+
+uploads
