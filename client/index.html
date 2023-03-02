@@ -19,7 +19,7 @@
           let showimage=document.getElementById('imagediv');
 
           async function getImageFunction(){
-            const response=fetch('http://localhost:5001/resources/footwear')
+            const response=await fetch('http://localhost:5001/resources/footwear')
             console.log(response);
 
         }
