@@ -7,6 +7,7 @@ const pool=require('../db');
 const app=express();
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
+
 router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenseller afterwards
    try {
     
@@ -25,12 +26,10 @@ router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenselle
 const productId=createproductquery.rows[0].product_id;
   const createlogsellingquery=await pool.query("INSERT INTO sellingtable(seller_id,product_id,quantity) values ($1,$2,$3) returning *",[id,productId,quantity] );
   console.log(createlogsellingquery);
-  res.status(200).json({message:'product created'});
+  res.status(200).json({'product_id':productId});
 } catch (error) {
     res.status(500).json({'message':error.message});
 }
-
-    
 })
 
 
@@ -40,9 +39,12 @@ const productId=createproductquery.rows[0].product_id;
   destination: (req, file, cb) => {
     cb(null, "uploads");
   },
-   filename: (req, file, cb) => {
+   filename: async (req, file, cb) => {
      const { originalname } = file;
-     cb(null, `${uuid()}-${originalname}`);
+     const productid=req.params.id;
+     filedesignation=`${uuid()}-${originalname}`;
+     const insertinto=await pool.query("INSERT into imagetable(product_id,imagename) values ($1,$2)",[productid,filedesignation]);
+     cb(null, filedesignation);
    },
  });
 
@@ -56,7 +58,7 @@ const fileFilter = (req, file, cb) => {
 
 // ["image", "jpeg"]
 
-const upload = multer({
+const upload = multer({                 //configure multer to mention the storage and filters
   storage,
   fileFilter,
   limits: { fileSize: 1000000000, files: 2 },
@@ -84,7 +86,7 @@ app.use((error, req, res, next) => {
   }
 });
 
-router.post("/create/image",upload.array("file"), async (req, res) => {
+router.post("/create/image/:id",upload.array("file"), async (req, res) => {
   try {
 
    return res.json({ status: "success" });
@@ -93,5 +95,9 @@ router.post("/create/image",upload.array("file"), async (req, res) => {
    }
  });
 
+ router.get('/getimage',(req,res)=>{
+  //output=`<h1>`
+  res.send(output);
+ })
 
 module.exports=router;
