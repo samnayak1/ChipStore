@@ -13,17 +13,25 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <button id="testdiv">button</button>
-        <div id="imagediv"></div>
+        <img id="hi" src="null" />
         <script>
           const button=document.getElementById('testdiv').addEventListener('click',getImageFunction);
-          let showimage=document.getElementById('imagediv');
-
+          let showimage=document.getElementById('hi');
+          
           async function getImageFunction(){
-            const response=await fetch('http://localhost:5001/resources/footwear')
-            console.log(response);
-
+             fetch('http://localhost:5001/resources/footwear')
+            .then(res=>res.json())
+           .then(result=>{
+                console.log(result)
+               showimage.src=result 
+            })
+           .catch(err=>console.log(err))
+           // const blab=response.blob();
+           //objURL=URL.createObjectURL(blab);
+          //  document.getElementById('hi').src=response.images;
+      
         }
-
-        </script>
+       </script>
+       
     </body>
 </html>

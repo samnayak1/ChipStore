@@ -8,36 +8,7 @@ const app=express();
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
 const path=require("path");
-router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenseller afterwards
-   try {
-    
-   
-   
-    const {name,price,discount,category,quantity}=req.body;
-  const jwtToken=req.header("token");
 
-  const user=jwt.verify(jwtToken,process.env.JWTSECRET);
-  const email=user.email;
-  const idquery=await pool.query("SELECT seller_id from sellertable where email=$1",[email]);
-
-  const id=idquery.rows[0].seller_id;
-  
-  const createproductquery=await pool.query("INSERT INTO producttable(name,price,discount,seller_id,category) values ($1,$2,$3,$4,$5) returning *",[name,price,discount,id,category]);
-const productId=createproductquery.rows[0].product_id;
-  const createlogsellingquery=await pool.query("INSERT INTO sellingtable(seller_id,product_id,quantity) values ($1,$2,$3) returning *",[id,productId,quantity] );
-  console.log(createlogsellingquery);
-  res.status(200).json({'product_id':productId});
-} catch (error) {
-    res.status(500).json({'message':error.message});
-}
-})
-
-
-
-
-
-
-//single upload starts here
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads");                 //cb(error, upload destination file)
@@ -47,7 +18,7 @@ const storage = multer.diskStorage({
      const productid=req.params.id;
      filedesignation=`${uuid()}-${originalname}`;
      const imgfilepath=path.join(__dirname, '..', 'uploads', filedesignation);
-     const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'avatar']);
+     const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'other']);
     cb(null, filedesignation);         //cb(error, name of file)
    },
  });
@@ -92,15 +63,15 @@ app.use((error, req, res, next) => {
   }
 });
 
-router.post("/create/avatar/:id",verifyTokenSeller,upload.single("file"), async (req, res) => {
+
+  router.post("/:id",verifyTokenSeller,upload.array("file",3), async (req, res) => {
   try {
 
    return res.json({ status: "success" });
   } catch (err) {
     res.json({'error':err});
    }
- });
-
+ }); 
 
  
 

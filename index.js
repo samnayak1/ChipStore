@@ -14,11 +14,14 @@ const verifyTokenSeller=require('./auth/verifytokenseller');
 const sellerauthrouter=require('./auth/sellerauth')
 const resourcesRoute=require('./resources/resources');
 const sellerroute=require('./sellerroutes/create');
+const multipleImageRoute=require('./sellerroutes/multiplefileupload');
 app.use('/auth/seller',sellerauthrouter);
 app.use('/auth',authRoutes);
 app.use('/auth/login',loginRoute);
 app.use('/resources/',resourcesRoute);
 app.use('/seller',sellerroute)
+app.use('/seller/multipleimages',multipleImageRoute)
+
 
 
 app.get('/',verifyToken,async (req,res)=>{
