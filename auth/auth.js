@@ -38,7 +38,7 @@ router.post('/register/sendotp',createAccountLimiter,async (req,res)=>{
   const saltRound=10;
   const salt=await bcrypt.genSalt(saltRound);
   const cryptedPassword=await bcrypt.hash(password,salt);
-        const newUser=await pool.query("INSERT INTO usertable (first_name,last_name,phone,email,password,street,pincode,state,country,isactive) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",[firstName,lastName,phone,email,cryptedPassword,street,pincode,state,country,'false']);
+  const newUser=await pool.query("INSERT INTO usertable (first_name,last_name,phone,email,password,street,pincode,state,country,isactive) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",[firstName,lastName,phone,email,cryptedPassword,street,pincode,state,country,'false']);
 
     
        //otp logic goes here
