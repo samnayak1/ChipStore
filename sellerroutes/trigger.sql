@@ -1,18 +1,11 @@
-CREATE OR REPLACE FUNCTION price_after_discount()
-  RETURNS TRIGGER 
-  LANGUAGE PLPGSQL
-  AS
-$$
+CREATE OR REPLACE FUNCTION calculate_price_after_discount() RETURNS TRIGGER AS $$
 BEGIN
-	 UPDATE producttable
-     SET producttable.priceafterdiscount=(producttable.price-(producttable.discount/100)*producttable.price);
-
-	RETURN NEW;
+  NEW.priceafterdiscount := NEW.price - (NEW.price * (NEW.discount / 100));
+  RETURN NEW;
 END;
-$$
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER price_discount_changes
-  AFTER UPDATE
-  ON producttable
-  FOR EACH ROW
-  EXECUTE PROCEDURE price_after_discount();
+CREATE OR REPLACE TRIGGER calculate_price_after_discount_trigger
+BEFORE INSERT OR UPDATE ON producttable
+FOR EACH ROW
+EXECUTE FUNCTION calculate_price_after_discount();
