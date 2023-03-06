@@ -7,3 +7,5 @@ id text
 .gitignore
 
 uploads
+
+settings.json
