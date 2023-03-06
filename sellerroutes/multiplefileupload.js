@@ -9,7 +9,7 @@ const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
 const path=require("path");
 const host=process.env.HOST;
-const port=process.env.PATH;
+const port=process.env.PORT;
 const protocol=process.env.PROTOCOL;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -20,9 +20,12 @@ const storage = multer.diskStorage({
      const productid=req.params.id;
      filedesignation=`${uuid()}-${originalname}`;   //http://localhost:5001/images/5c03383a-f21f-4c7c-a11c-1bc0fdc57605-agg.jpg
      const imgfilepath= `${protocol}://${host}:${port}/images/${filedesignation}`;
+     console.log(imgfilepath);
 
-
+   
+   
      const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'other']);
+     console.log(insertinto)
     cb(null, filedesignation);         //cb(error, name of file)
    },
  });
@@ -40,7 +43,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({                 //configure multer to mention the storage and filters
   
   fileFilter,
-  limits:{fileSize: 1000000000,maxfiles:4},
+  limits:{fileSize: 10*1024*1024,files:4},
   storage
 
 });

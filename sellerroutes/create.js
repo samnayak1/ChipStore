@@ -8,6 +8,9 @@ const app=express();
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
 const path=require("path");
+const host=process.env.HOST;
+const port=process.env.PORT;
+const protocol=process.env.PROTOCOL;
 router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenseller afterwards
    try {
     
@@ -25,6 +28,7 @@ router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenselle
   const createproductquery=await pool.query("INSERT INTO producttable(name,price,discount,seller_id,category) values ($1,$2,$3,$4,$5) returning *",[name,price,discount,id,category]);
 const productId=createproductquery.rows[0].product_id;
   const createlogsellingquery=await pool.query("INSERT INTO sellingtable(seller_id,product_id,quantity) values ($1,$2,$3) returning *",[id,productId,quantity] );
+  const updatecountofavailableproducts=await pool.query("INSERT INTO availabletable(product_id,quantity) values ($1,$2) returning *",[productId,quantity])
   console.log(createlogsellingquery);
   res.status(200).json({'product_id':productId});
 } catch (error) {
@@ -46,9 +50,13 @@ const storage = multer.diskStorage({
      const { originalname } = file;       //destructure the file object to get originalname
      const productid=req.params.id;
      filedesignation=`${uuid()}-${originalname}`;
-     const imgfilepath=path.join(__dirname, '..', 'uploads', filedesignation);
+     console.log(filedesignation)
+    
+     const imgfilepath=`${protocol}://${host}:${port}/images/${filedesignation}`;  //http://localhost:5001/images/5c03383a-f21f-4c7c-a11c-1bc0fdc57605-agg.jpg
+     
      const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'avatar']);
-    cb(null, filedesignation);         //cb(error, name of file)
+    console.log(insertinto);
+     cb(null, filedesignation);         //cb(error, name of file)
    },
  });
 
@@ -65,7 +73,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({                 //configure multer to mention the storage and filters
   storage,
   fileFilter,
-  limits: { fileSize: 1000000000, files: 3 },
+  limits:{fileSize: 10*1024*1024,files:1},
 });
 
 
@@ -92,7 +100,7 @@ app.use((error, req, res, next) => {
   }
 });
 
-router.post("/create/avatar/:id",verifyTokenSeller,upload.single("file"), async (req, res) => {
+router.post("/create/avatar/:id",verifyTokenSeller,upload.single("file"),async (req, res) => {
   try {
 
    return res.json({ status: "success" });
