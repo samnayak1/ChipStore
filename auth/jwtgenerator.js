@@ -2,9 +2,10 @@ const jwt=require('jsonwebtoken')
 
 require('dotenv').config();
 
-function jwtGenerator(email){
+function jwtGenerator(id,email){
 
     const payload={
+        id:id,
         email:email
     }
 
