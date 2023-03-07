@@ -28,9 +28,10 @@ async function sms(userDetails){
 
 
 
-  
+ 
   
   console.log("Message sent: %s", info.messageId);
+  res.status(200).json({message:'message sent'})
 
 }
 
