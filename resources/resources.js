@@ -4,8 +4,8 @@ const express=require('express')
 const router=express.Router();
 const app=express();
 const path=require("path")
-const fs=require("fs");
 
+const jwt=require('jsonwebtoken')
 
 
 router.get('/category/:categoryname',async(req,res)=>{
@@ -19,13 +19,21 @@ router.get('/category/:categoryname',async(req,res)=>{
 )
 router.get('/product/:productid',verifyToken,async(req,res)=>{
   const productid=req.params.productid;
-      const productquery=await pool.query("SELECT a.name,a.price,a.category,a.discount,a.created_time,b.email from producttable a JOIN sellertable b on a.seller_id=b.seller_id where a.product_id=$1",[productid]);
-      
+  const jwtToken=req.header("token");
+  const payload=jwt.verify(jwtToken,process.env.JWTSECRET);
+  const id=payload.id;
+      const productquery=await pool.query("SELECT a.product_id,a.name,a.price,a.category,a.discount,a.created_time,b.email,c.imagename from producttable a JOIN sellertable b ON a.seller_id=b.seller_id JOIN imagetable c ON c.product_id=a.product_id where a.product_id=$1",[productid]);
+      const visitedquery=await pool.query("INSERT INTO visitedtable(user_id,product_id) values ($1,$2)",[id,productid]);
       const productrow=productquery.rows[0];
 
 res.status(200).json(productrow);
 
 
+})
+
+router.get('/trending',async(req,res)=>{  
+  const trendquery=await pool.query("SELECT a.product_id,b.name,b.price,b.priceafterdiscount,b.category,count(a.product_id) as numberoftimesviewed FROM visitedtable a LEFT JOIN producttable b ON a.product_id=b.product_id WHERE a.visited_time_utc BETWEEN NOW() - INTERVAL '30 days' AND NOW() GROUP BY a.product_id,b.name,b.price,b.priceafterdiscount,b.category ORDER BY count(a.product_id) DESC limit 10")
+  res.status(201).json(trendquery.rows);
 })
 
 module.exports=router;
