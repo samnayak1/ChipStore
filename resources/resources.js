@@ -8,15 +8,16 @@ const path=require("path")
 const jwt=require('jsonwebtoken')
 
 
-router.get('/category/:categoryname',async(req,res)=>{
+router.get('/category/:categoryname/:pagesperpage/:pagenumber',async(req,res)=>{
   const category=req.params.categoryname;
   
-  const categorytablequery=await pool.query("SELECT a.product_id,a.imagename,b.name,b.price,b.discount,b.priceafterdiscount,b.created_time,b.seller_id from imagetable a RIGHT JOIN producttable b on a.product_id=b.product_id where category=$1 AND a.type=$2 limit 5",[category,'avatar']);
+  const categorytablequery=await pool.query("SELECT a.product_id,a.imagename,b.name,b.price,b.discount,b.priceafterdiscount,b.created_time,b.seller_id from imagetable a RIGHT JOIN producttable b on a.product_id=b.product_id where category=$1 AND a.type=$2 limit $3 OFFSET ($4 - 1) * $3",[category,'avatar',req.params.pagesperpage,req.params.pagenumber]);    //SELECT *FROM items LIMIT {itemsPerPage} OFFSET {(page - 1) * itemsPerPage}
   const categoryrows=categorytablequery.rows;
   
   res.status(201).json(categoryrows);
 }
 )
+
 router.get('/product/:productid',verifyToken,async(req,res)=>{
   const productid=req.params.productid;
   const jwtToken=req.header("token");
@@ -31,8 +32,8 @@ res.status(200).json(productrow);
 
 })
 
-router.get('/trending',async(req,res)=>{  
-  const trendquery=await pool.query("SELECT a.product_id,b.name,b.price,b.priceafterdiscount,b.category,count(a.product_id) as numberoftimesviewed FROM visitedtable a LEFT JOIN producttable b ON a.product_id=b.product_id WHERE a.visited_time_utc BETWEEN NOW() - INTERVAL '30 days' AND NOW() GROUP BY a.product_id,b.name,b.price,b.priceafterdiscount,b.category ORDER BY count(a.product_id) DESC limit 10")
+router.get('/trending/:pagesperpage/:pagenumber',async(req,res)=>{  
+  const trendquery=await pool.query("SELECT a.product_id,b.name,b.price,b.priceafterdiscount,b.category,count(a.product_id) as numberoftimesviewed FROM visitedtable a LEFT JOIN producttable b ON a.product_id=b.product_id WHERE a.visited_time_utc BETWEEN NOW() - INTERVAL '30 days' AND NOW() GROUP BY a.product_id,b.name,b.price,b.priceafterdiscount,b.category ORDER BY count(a.product_id) DESC limit $1 OFFSET ($2 - 1)*$1",[req.params.pagesperpage,req.params.pagenumber])
   res.status(201).json(trendquery.rows);
 })
 
