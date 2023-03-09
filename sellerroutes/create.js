@@ -35,6 +35,7 @@ const productId=createproductquery.rows[0].product_id;
   }
   catch(err){
    await pool.query('ROLLBACK')
+   res.status(500).json({message:'error transaction rolled back'});
    throw err;
   }
 // console.log(createlogsellingquery);
