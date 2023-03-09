@@ -33,7 +33,7 @@ res.status(200).json(productrow);
 })
 
 router.get('/trending/:pagesperpage/:pagenumber',async(req,res)=>{  
-  const trendquery=await pool.query("SELECT a.product_id,b.name,b.price,b.priceafterdiscount,b.category,count(a.product_id) as numberoftimesviewed FROM visitedtable a LEFT JOIN producttable b ON a.product_id=b.product_id WHERE a.visited_time_utc BETWEEN NOW() - INTERVAL '30 days' AND NOW() GROUP BY a.product_id,b.name,b.price,b.priceafterdiscount,b.category ORDER BY count(a.product_id) DESC limit $1 OFFSET ($2 - 1)*$1",[req.params.pagesperpage,req.params.pagenumber])
+  const trendquery=await pool.query("SELECT a.product_id,b.name,b.price,b.priceafterdiscount,b.category,c.imagename,count(a.product_id) as numberoftimesviewed FROM visitedtable a LEFT JOIN producttable b ON a.product_id=b.product_id JOIN imagetable c ON a.product_id=c.product_id WHERE a.visited_time_utc BETWEEN NOW() - INTERVAL '30 days' AND NOW() GROUP BY a.product_id,b.name,b.price,b.priceafterdiscount,b.category,c.imagename ORDER BY count(a.product_id) DESC limit $1 OFFSET ($2 - 1)*$1",[req.params.pagesperpage,req.params.pagenumber])
   res.status(201).json(trendquery.rows);
 })
 

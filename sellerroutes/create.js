@@ -29,7 +29,7 @@ router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenselle
 const productId=createproductquery.rows[0].product_id;
   const createlogsellingquery=await pool.query("INSERT INTO sellingtable(seller_id,product_id,quantity) values ($1,$2,$3) returning *",[id,productId,quantity] );
   const updatecountofavailableproducts=await pool.query("INSERT INTO availabletable(product_id,quantity) values ($1,$2) returning *",[productId,quantity])
-  console.log(createlogsellingquery);
+// console.log(createlogsellingquery);
   res.status(200).json({'product_id':productId});
 } catch (error) {
     res.status(500).json({'message':error.message});
