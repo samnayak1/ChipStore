@@ -7,6 +7,7 @@ const pool=require('../db');
 const app=express();
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
+const verifyid=require('../auth/verifyid')
 const path=require("path");
 const host=process.env.HOST;
 const port=process.env.PORT;
@@ -45,27 +46,18 @@ const productId=createproductquery.rows[0].product_id;
 }
 })
 
-router.put('/adddiscount/:id',verifyTokenSeller,async(req,res)=>{
-  const jwtToken=req.header("token");
-  const user=jwt.verify(jwtToken,process.env.JWTSECRET);
-  const sellerid=user.id;
-  const sellerquery=await pool.query("SELECT seller_id from producttable where product_id=$1",[req.params.id]);
-  if(sellerid!=sellerquery.rows[0].seller_id)
-     res.status(403).json({'message':'not authorized'})
+router.put('/adddiscount/:id',verifyTokenSeller,verifyid,async(req,res)=>{
+  
 
   const newdiscount=req.body.discount;
   await pool.query("BEGIN")
   const discountquery=await pool.query("UPDATE producttable SET discount=$1 WHERE product_id=$2 returning *",[newdiscount,req.params.id]);
   await pool.query("COMMIT")
-  res.status(204).json({'message':'updated'})
+  res.status(204).json({message:'updated'})
 })
-router.put('/removediscount/:id',verifyTokenSeller,async(req,res)=>{
-  const jwtToken=req.header("token");
-  const user=jwt.verify(jwtToken,process.env.JWTSECRET);
-  const sellerid=user.id;
-  const sellerquery=await pool.query("SELECT seller_id from producttable where product_id=$1",[req.params.id]);
-  if(sellerid!=sellerquery.rows[0].seller_id)
-     res.status(403).json({'message':'not authorized'})
+//verifyTokenSeller
+router.put('/removediscount/:id',verifyTokenSeller,verifyid,async(req,res)=>{
+  
   const discountquery=await pool.query("UPDATE producttable SET discount=$1 WHERE product_id=$2 returning *",[0,req.params.id]);
   res.status(204).json({message:'updated'})
   
@@ -133,7 +125,7 @@ app.use((error, req, res, next) => {
   }
 });
 
-router.post("/create/avatar/:id",verifyTokenSeller,upload.single("file"),async (req, res) => {
+router.post("/create/avatar/:id",verifyTokenSeller,verifyid,upload.single("file"),async (req, res) => {
   try {
 
    return res.json({ status: "success" });
