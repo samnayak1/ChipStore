@@ -24,13 +24,21 @@ router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenselle
   const idquery=await pool.query("SELECT seller_id from sellertable where email=$1",[email]);
 
   const id=idquery.rows[0].seller_id;
-  
+ try{
+  await pool.query("BEGIN")
   const createproductquery=await pool.query("INSERT INTO producttable(name,price,discount,seller_id,category) values ($1,$2,$3,$4,$5) returning *",[name,price,discount,id,category]);
 const productId=createproductquery.rows[0].product_id;
   const createlogsellingquery=await pool.query("INSERT INTO sellingtable(seller_id,product_id,quantity) values ($1,$2,$3) returning *",[id,productId,quantity] );
   const updatecountofavailableproducts=await pool.query("INSERT INTO availabletable(product_id,quantity) values ($1,$2) returning *",[productId,quantity])
-// console.log(createlogsellingquery);
   res.status(200).json({'product_id':productId});
+  await pool.query("COMMIT")
+  }
+  catch(err){
+   await pool.query('ROLLBACK')
+   throw err;
+  }
+// console.log(createlogsellingquery);
+  
 } catch (error) {
     res.status(500).json({'message':error.message});
 }
@@ -45,8 +53,9 @@ router.put('/adddiscount/:id',verifyTokenSeller,async(req,res)=>{
      res.status(403).json({'message':'not authorized'})
 
   const newdiscount=req.body.discount;
+  await pool.query("BEGIN")
   const discountquery=await pool.query("UPDATE producttable SET discount=$1 WHERE product_id=$2 returning *",[newdiscount,req.params.id]);
-
+  await pool.query("COMMIT")
   res.status(204).json({'message':'updated'})
 })
 router.put('/removediscount/:id',verifyTokenSeller,async(req,res)=>{
