@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads");                 //cb(error, upload destination file)
   },
    filename: async (req, file, cb) => {
+    await pool.query("BEGIN");
      const { originalname } = file;       //destructure the file object to get originalname
      const productid=req.params.id;
      filedesignation=`${uuid()}-${originalname}`;   //http://localhost:5001/images/5c03383a-f21f-4c7c-a11c-1bc0fdc57605-agg.jpg
@@ -27,6 +28,7 @@ const storage = multer.diskStorage({
      const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'other']);
      console.log(insertinto)
     cb(null, filedesignation);         //cb(error, name of file)
+    await pool.query("COMMIT");
    },
  });
 
