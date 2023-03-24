@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
    
    
      const insertinto=await pool.query("INSERT into imagetable(product_id,imagename,type) values ($1,$2,$3) returning *",[productid,imgfilepath,'other']);
-     console.log(insertinto)
+    // console.log(insertinto)
     cb(null, filedesignation);         //cb(error, name of file)
     await pool.query("COMMIT");
    },

@@ -10,7 +10,7 @@ const sms=require('./sms');
 const rateLimit = require('express-rate-limit')
 const createAccountLimiter = rateLimit({
 	windowMs: 60 * 60 * 1000, // 1 hour
-	max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
+	max: 10, // Limit each IP to 5 create account requests per `window` (here, per hour)
 	message:
 		'Too many accounts created from this IP, please try again after an hour',
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
@@ -76,11 +76,15 @@ router.post('/register/verify/:id',createAccountLimiter,async (req,res)=>{
       //console.log(otpquery.rows[0].otp);
       const otpbody=req.body.otp;
       //console.log(otpbody);
+      if(otpbody!=otpquery.rows[0].otp)
+        res.status(403).json({message:'wrong otp'})
+
       if(otpbody==otpquery.rows[0].otp){
         const validate=pool.query("UPDATE usertable SET isactive=$1 where user_id=$2",['true',req.params.id]);
        success=true;
       }
-
+      
+       
       if(success==true){
         const token=jwtGenerator(req.params.id,email);
         const deleteotp=pool.query("DELETE from otptable where email=$1",[email]);

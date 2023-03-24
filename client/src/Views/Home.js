@@ -1,24 +1,22 @@
 import React from 'react'
-
-import ProductList from './ProductList';
-import useSWR from 'swr'
+import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 import FetchData from '../FetchData';
 function Home() {
-  const fetcher=(...args)=>fetch(...args).then((res)=>res.json())
-// const {data,error}=useSWR("http://localhost:5001/resources/trending/5/1",fetcher,{suspense:true})
-  const data=FetchData("http://localhost:5001/resources/trending/5/1")
+  const token=localStorage.getItem('token')
+  const trending=FetchData("http://localhost:5001/resources/trending/5/1",token)
   return (
     <div>
+      <Navbar/>
+
       <h1>Trending this month</h1>
-
-
-      { data.map((product)=>
+  { trending.map((product)=>
   <li key={product.product_id}>
    <h3>{product.name}</h3>
    <h5>Original Price :{product.price}</h5>
    <h5>Price after discount: {product.priceafterdiscount}</h5>
-
-   <img src={product.imagename} height={50} width={50}/>
+   <Link to={`product/${product.product_id}`}>visit product</Link>
+   <img src={product.imagename} height={50} width={50} alt='mg'/>
    
   </li>
   
