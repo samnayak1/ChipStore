@@ -15,7 +15,7 @@ function Home() {
    <h3>{product.name}</h3>
    <h5>Original Price :{product.price}</h5>
    <h5>Price after discount: {product.priceafterdiscount}</h5>
-   <Link to={`product/${product.product_id}`}>visit product</Link>
+   <Link to={`product/${product.product_id}`}><h5>visit product</h5></Link>
    <img src={product.imagename} height={50} width={50} alt='mg'/>
    
   </li>
