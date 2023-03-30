@@ -5,12 +5,13 @@ import FetchData from '../FetchData';
 function Home() {
   const token=localStorage.getItem('token')
   const trending=FetchData("http://localhost:5001/resources/trending/5/1",token)
+ 
   return (
     <div>
       <Navbar/>
 
       <h1>Trending this month</h1>
-  { trending.map((product)=>
+  { trending?trending.map((product)=>
   <li key={product.product_id}>
    <h3>{product.name}</h3>
    <h5>Original Price :{product.price}</h5>
@@ -20,7 +21,7 @@ function Home() {
    
   </li>
   
-  )
+  ):<div><h5>no results found</h5></div>
 }
      
        

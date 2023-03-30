@@ -5,6 +5,7 @@ const uuid = require("uuid").v4;
 const router=express.Router();
 const pool=require('../db');
 const app=express();
+const cors=require('cors')
 const jwt=require('jsonwebtoken');
 const verifyTokenSeller=require('../auth/verifytokenseller')
 const verifyid=require('../auth/verifyid')
@@ -12,6 +13,7 @@ const path=require("path");
 const host=process.env.HOST;
 const port=process.env.PORT;
 const protocol=process.env.PROTOCOL;
+app.use(cors())
 router.post('/create',verifyTokenSeller,async(req,res)=>{ //add verifytokenseller afterwards
    try {
     

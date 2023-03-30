@@ -4,8 +4,7 @@ import {useFormik} from 'formik'
 import { AuthContext } from '../AuthContextProvider';
 import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
-
-function Login() {
+function SellerLogin() {
     const {setisLoggedIn}=useContext(AuthContext);
     const navigate = useNavigate();
     const formik=useFormik({
@@ -26,7 +25,7 @@ function Login() {
 //http://localhost:5001/auth/login
 
 onSubmit:async (values)=>{
-   await fetch('http://localhost:5001/auth/login',{
+   await fetch('http://localhost:5001/auth/seller/login',{
         method:'POST',
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(values)
@@ -48,7 +47,7 @@ onSubmit:async (values)=>{
         console.log(data);
         setisLoggedIn(true)
 
-        navigate('/');
+        navigate('/seller/sellerPage');
         
 
     })
@@ -63,25 +62,24 @@ onSubmit:async (values)=>{
 
 
 })
-   const sellerLogin=()=>{
-    navigate('/seller/login')
-    }
+
   
     const  register = () =>{
         navigate('/register')
     }
-     
-     
+    const userLogin=()=>{
+        navigate('/login')
+    }
+    
     return (
 
 
     <div>
      <button id="register" onClick={(e)=>{
-       register() }}>New Seller? Sign up</button>
-       
-        <button id="sellerLogin" onClick={(e)=>{
-       sellerLogin() }}>Seller?</button>
-    <h2>Login</h2>
+       register() }}>New user? Sign up</button>
+    <button id='userLogin' onClick={(e)=>{userLogin()}}>just a customer?</button>
+
+    <h2>Seller Login</h2>
     <form onSubmit={formik.handleSubmit}>
    
     <input id="email"
@@ -109,4 +107,4 @@ onSubmit:async (values)=>{
   )
 }
 
-export default Login
+export default SellerLogin

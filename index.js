@@ -16,6 +16,7 @@ const sellerauthrouter=require('./auth/sellerauth')
 const resourcesRoute=require('./resources/resources');
 const sellerroute=require('./sellerroutes/create');
 const multipleImageRoute=require('./sellerroutes/multiplefileupload');
+const getProductRoute=require('./sellerroutes/getProducts')
 app.use('/auth/getuser',getUserDetails);
 app.use('/auth/seller',sellerauthrouter);
 app.use('/auth',authRoutes);
@@ -23,6 +24,8 @@ app.use('/auth/login',loginRoute);
 app.use('/resources',resourcesRoute);
 app.use('/seller',sellerroute)
 app.use('/seller/multipleimages',multipleImageRoute)
+app.use('/seller/getproducts',getProductRoute)
+
 app.use("/uploads", express.static(path.join(__dirname,"uploads")));
 
 

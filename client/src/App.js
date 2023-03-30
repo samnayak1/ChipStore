@@ -9,6 +9,11 @@ import { Suspense } from 'react';
 import { AuthContext } from './AuthContextProvider';
 import OTP from './Views/OTP';
 import Product from './Views/Product';
+import SellerLogin from './Views/SellerLogin';
+import SellerOTP from './Views/SellerOTP';
+import SellerPage from './Views/SellerPage';
+import SellerCreate from './Views/SellerCreate';
+import SellerAvatar from './Views/SellerAvatar';
 function App() {
   const[isLoggedIn,setisLoggedIn]=useState(false);
   return (
@@ -21,7 +26,15 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/register/otp/:id" element={<OTP/>} />
           <Route path="/register" element={<Register/>} />
-          <Route path="product/:id" element={<Product/>} />
+          <Route path="/product/:id" element={<Product/>} />
+          <Route path='/seller/login' element={<SellerLogin/>} />
+          <Route path='/seller/sellerPage' element={<SellerPage/>} />
+          <Route path='/seller/sellerCreate' element={<SellerCreate/>} />
+         <Route path='/seller/upload/avatar/:id' element={<SellerAvatar/>} />
+      
+
+           
+          
         </Routes>
 
         </Suspense>

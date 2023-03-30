@@ -26,7 +26,7 @@ res.status(200).json({
 'isactive':isactive  });
 })
 
-router.get('/verify',verifyToken,async(res,res)=>{
+router.get('/verify',verifyToken,async(req,res)=>{
   try{
   res.status(200).send({message:'verified'})
   }
