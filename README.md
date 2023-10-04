@@ -96,7 +96,7 @@ CREATE TABLE otptable(
 )
 ```
 ### About the project
- This is my first project that I have made. The project contains express routes with a Register/Login authentication, a database built with PostgreSQL and a bit of client side React work. The routes contain REST endpoints that provide functions to manage commercial activity.  
+ This is my first project that I have made. The project contains express routes with a Register/Login authentication, a database built with PostgreSQL and a bit of client side React work. The routes contain REST endpoints that provide functions to manage commercial activity all protected by JSON Web Tokens. Used multer to store images and served it statically. Nodemailer is used to send emails to client to get One Time Passwords (OTP).
 
 ```  
 app.use('/auth/getuser',getUserDetails);
