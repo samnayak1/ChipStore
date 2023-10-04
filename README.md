@@ -1,15 +1,22 @@
 # ChipStore
 
-###Running on your device
+### Running on your device
+
 Install npm and PostgreSql database on a Debian based machine
+
 > sudo apt install npm && postgresql
-> head over to the "instructions.sql" file and paste the code into a psql terminal
+
+> head over to the "instructions.sql" file (or the code below)  and paste the code into a psql terminal one command at a time
 
 > npm install
+
 > npm start
+
 In another terminal
 > cd client
+
 > node index.js
+
 > set env variables on your operating system. These include database credentials DBUSER, DBPASSWORD, DBHOST, DBPORT, DBDATABASE and a random keyword JWTSECRET. or create a .env file to configure all variables.Also configure the email username, password and the type of service that the email belongs to. This email is the email that the One Time Password will be done from EMAILSERVICE, ETHERALEMAIL, ETHERALPASSWORD
 .
 The instructions.sql file
@@ -88,5 +95,29 @@ CREATE TABLE otptable(
     otp NUMERIC(6,0) NOT NULL
 )
 ```
-###About the project
- This is my first project that I have made. The project contains express routes with a Register/Login authentication, a database built with PostgreSQL and a bit of client side React work. The routes contain REST endpoints that provide functions to manage commercial activity.    
+### About the project
+ This is my first project that I have made. The project contains express routes with a Register/Login authentication, a database built with PostgreSQL and a bit of client side React work. The routes contain REST endpoints that provide functions to manage commercial activity.  
+
+```  
+app.use('/auth/getuser',getUserDetails);
+app.use('/auth/seller',sellerauthrouter);
+app.use('/auth',authRoutes);
+app.use('/auth/login',loginRoute);
+app.use('/resources',resourcesRoute);
+app.use('/seller',sellerroute)
+app.use('/seller/multipleimages',multipleImageRoute)
+app.use('/seller/getproducts',getProductRoute)
+
+app.use("/uploads", express.static(path.join(__dirname,"uploads")));
+
+
+app.get('/images/:filename',async (req,res)=>{
+    const filename=req.params.filename;
+    res.sendFile(path.join(__dirname,"uploads",filename));
+
+}) 
+
+
+
+
+```
